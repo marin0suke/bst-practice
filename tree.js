@@ -22,4 +22,24 @@ export default class Tree {
 
         return build(0, arr.length - 1);
     }
+
+    insert(value) {
+        const insertNode = (node, value) => { 
+            if (!node) return new Node(value); // inserts new node at correct position. (base case).
+
+            if (value < node.value) { // traverses by comparing to the param.
+                node.left = insertNode(node.left, value); // assign to left or right after traversing to "save" any potential changes before returning.
+            } else if (value > node.value) {
+                node.right = insertNode(node.right, value);
+            }
+
+            return node; 
+        }    
+
+        this.root = insertNode(this.root, value); // starts the recursive call by starting at top of tree. // updates this.root in case tree was previously empty.
+    }
+
+    deleteItem(value) {
+        
+    }
 }
