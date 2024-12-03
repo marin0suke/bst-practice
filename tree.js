@@ -62,6 +62,16 @@ export default class Tree {
     }
 
     find(value) {
+        const searchNode = (node, value) => {
+            if (!node) return false;
+            if (node.value === value) return true;
 
+            if (value < node.value) {
+                return searchNode(node.left, value);
+            } else {
+                return searchNode(node.right, value);
+            }
+        }
+        return searchNode(this.root, value);
     }
 }
