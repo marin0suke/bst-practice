@@ -19,7 +19,6 @@ export default class Tree {
 
             return node;
         };
-
         return build(0, arr.length - 1);
     }
 
@@ -32,7 +31,6 @@ export default class Tree {
             } else if (value > node.value) {
                 node.right = insertNode(node.right, value);
             }
-
             return node; 
         }    
 
@@ -40,6 +38,30 @@ export default class Tree {
     }
 
     deleteItem(value) {
-        
+        const deleteNode = (node, value) => {
+            if (!node) return null;
+
+            if (value < node.value) {
+                node.left = deleteNode(node.left, value);
+            } else if (value > node.value) {
+                node.right = deleteNode(node.right, value);
+            } else {
+                if (!node.right) return node.left; // effectively replaces the node being deleted. overwrite to delete.
+                if (!node.left) return node.right;
+
+                let successor = node.right; // need to find the next value that will maintain BST. higher than all in left sub, but lower than rest of right sub.
+                while (successor.left) { // go as far down as possible on left side of right sub.
+                    successor = successor.left;
+                }
+                node.value = successor.value; // save the smallest value in right subtree to replace the deleted node.
+                node.right = deleteNode(node.right, successor.value); // deletes the in-order successor from the tree.
+            }
+            return node;
+        }
+        this.root = deleteNode(this.root, value);
+    }
+
+    find(value) {
+
     }
 }
