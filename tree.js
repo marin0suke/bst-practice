@@ -98,18 +98,18 @@ export default class Tree {
             throw new Error("Callback required");
         }
 
-        const height = this.getHeight(this.root);
+        const height = this.getTreeHeight(this.root);
 
         for (let level = 1; level <= height; level++) {
             this.printLevel(this.root, level, callback); // process each level 
         }
     }
 
-    getHeight(node) { // recursive helper function for levelOrder. this will recursively count how deep each sub array from the root is.
+    getTreeHeight(node) { // recursive helper function for levelOrder. this will recursively count how deep each sub array from the root is.
         if (!node) return 0; // if there is nothing to "count" we don't want to add to the height.
 
-        const leftHeight = this.getHeight(node.left);
-        const rightHeight = this.getHeight(node.right);
+        const leftHeight = this.getTreeHeight(node.left);
+        const rightHeight = this.getTreeHeight(node.right);
         return Math.max(leftHeight, rightHeight) + 1; // gets whichever is longer
     }
 
@@ -122,5 +122,59 @@ export default class Tree {
             this.printLevel(node.left, level - 1); // recurse into left subtree
             this.printLevel(node.right, level - 1); // recurse into right subtree.
         }
+    }
+
+    height(node) { // given node to farthest leaf IN ITS SUBTREE. useful for: calc height difference between subtrees and defining balance.
+        if (!node) return -1; // -1 to account for edges (there will be one less edge than there are nodes to the root.)
+
+        const left = this.height(node.left);
+        const right = this.height(node.right);
+        return Math.max(left, right) + 1;
+    }
+
+    depth(root, targetNode) {
+        if (!root) return - 1;
+        if (root === targetNode) return 0; // if the root if the target, height is 0. we then exit and the next bit doesn't run.
+
+        // if the root isn't the target, we recurse down (where the next node becomes the new root) and we check again.
+        const leftHeight = this.depth(root.left, targetNode);
+        const rightHeight = this.depth(root.right, targetNode);
+
+        if (leftHeight !== -1) { // if we have found the node, we will be returning 0 from that node. so if 0, we will be + 1 (we start counting edges from node back to the root).
+            return leftHeight + 1;
+        }
+        if (rightHeight !== -1) {
+            return rightHeight + 1;
+        }
+
+        return -1; // if the node is not found in either subtree.
+    }
+
+    isBalanced(root) { // returns true if for every node, height diff between left and right subtrees is at most 1. 
+        if (!root) return true; // an empty tree is balanced.
+
+        const left = this.height(root.left);
+        const right = this.height(root.right);
+
+        const balanceFactor = Math.abs(left - right); // 
+
+        return balanceFactor <= 1 && this.isBalanced(root.left) && this.isBalanced(root.right);
+    }
+
+    isBalanced(root) {
+        const checkBalance = (node) => {
+            if (!node) return 0; // base case. this will happen when we hit a node with no children (ie we got to the bottom)
+
+            const leftHeight = checkBalance(node.left); // given the root, we calc height of each subtree.
+            const rightHeight = checkBalance(node.right);
+
+            if (leftHeight === -1 || rightHeight === -1 || Math.abs(leftHeight - rightHeight) > 1) {
+                return -1; // unbalanced. 
+            }
+
+            return Math.max(leftHeight, rightHeight) + 1; // returns height of tree.
+        };
+        
+        return checkBalance(root) !== -1; // if result is -1, tree is unbalanced. 
     }
 }
