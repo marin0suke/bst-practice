@@ -74,4 +74,22 @@ export default class Tree {
         }
         return searchNode(this.root, value);
     }
+
+    levelOrder(callback) {
+        if (typeof callback !== "function") {
+            throw new Error ("Callback required");
+        }
+
+        if (!this.root) return; // no tree = no traversal.
+
+        const queue = [this.root]; // init queue with the root node.
+
+        while (queue.length > 0) {
+            const currentNode = queue.shift(); // dequeue
+            callback(currentNode);
+            if (currentNode.left) queue.push(currentNode.left);
+            if (currentNode.right) queue.push(currentNode.right);
+        }
+        
+    }
 }
