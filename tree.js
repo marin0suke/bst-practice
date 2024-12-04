@@ -77,7 +77,7 @@ export default class Tree {
 
     levelOrder(callback) {
         if (typeof callback !== "function") {
-            throw new Error ("Callback required");
+            throw new Error("Callback required");
         }
 
         if (!this.root) return; // no tree = no traversal.
@@ -90,6 +90,37 @@ export default class Tree {
             if (currentNode.left) queue.push(currentNode.left);
             if (currentNode.right) queue.push(currentNode.right);
         }
-        
+
+    }
+
+    levelOrderRecurse(callback) {
+        if (typeof callback !== "function") {
+            throw new Error("Callback required");
+        }
+
+        const height = this.getHeight(this.root);
+
+        for (let level = 1; level <= height; level++) {
+            this.printLevel(this.root, level, callback); // process each level 
+        }
+    }
+
+    getHeight(node) { // recursive helper function for levelOrder. this will recursively count how deep each sub array from the root is.
+        if (!node) return 0; // if there is nothing to "count" we don't want to add to the height.
+
+        const leftHeight = this.getHeight(node.left);
+        const rightHeight = this.getHeight(node.right);
+        return Math.max(leftHeight, rightHeight) + 1; // gets whichever is longer
+    }
+
+    printLevel(node, level) {
+        if (!node) return; // if node is null, do nothing.
+
+        if (level === 1) {
+            console.log(node.value);
+        } else {
+            this.printLevel(node.left, level - 1); // recurse into left subtree
+            this.printLevel(node.right, level - 1); // recurse into right subtree.
+        }
     }
 }
