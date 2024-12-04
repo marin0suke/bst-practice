@@ -1,3 +1,5 @@
+import Node from "./treeNode.js";
+
 export default class Tree {
     constructor(arr = []) {
         this.root = this.buildTree(arr); // buildTree returns the root.
@@ -166,4 +168,54 @@ export default class Tree {
         
         return checkBalance(root) !== -1; // if result is -1, tree is unbalanced. 
     }
+
+    inOrder(node, callback) {
+        if (typeof callback !== "function") {
+            throw new Error("Callback required");
+        }
+
+        if (!node) return; // base case if node is null stop recursion.
+
+        this.inOrder(node.left, callback); // traverse left subtree.
+        callback(node); // visit current node.
+        this.inOrder(node.right, callback); // traverse right subtree.
+    }
+
+    preOrder(node, callback) {
+        if (typeof callback !== "function") {
+            throw new Error("Callback required");
+        }
+
+        if (!node) return; // base case if node is null stop recursion.
+
+        callback(node); // visit current node.
+        this.preOrder(node.left, callback); // traverse left subtree.
+        this.preOrder(node.right, callback); // traverse right subtree.
+    }
+
+    postOrder(node, callback) {
+        if (typeof callback !== "function") {
+            throw new Error("Callback required");
+        }
+
+        if (!node) return; // base case if node is null stop recursion.
+
+        this.postOrder(node.left, callback); // traverse left subtree.
+        this.postOrder(node.right, callback); // traverse right subtree.
+        callback(node); // visit current node.
+    }
+
+
+    rebalance() {
+       let oldTree = this.root;
+
+       if (!this.isBalanced(oldTree)) {
+            const sortedValues = []; 
+            this.inOrder(oldTree, (node) => sortedValues.push(node.value)); // in order traversal.
+            this.root = this.buildTree(sortedValues);
+       } 
+
+       return this.root;
+    }
 }
+
