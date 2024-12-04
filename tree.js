@@ -150,17 +150,6 @@ export default class Tree {
         return -1; // if the node is not found in either subtree.
     }
 
-    isBalanced(root) { // returns true if for every node, height diff between left and right subtrees is at most 1. 
-        if (!root) return true; // an empty tree is balanced.
-
-        const left = this.height(root.left);
-        const right = this.height(root.right);
-
-        const balanceFactor = Math.abs(left - right); // 
-
-        return balanceFactor <= 1 && this.isBalanced(root.left) && this.isBalanced(root.right);
-    }
-
     isBalanced(root) {
         const checkBalance = (node) => {
             if (!node) return 0; // base case. this will happen when we hit a node with no children (ie we got to the bottom)
